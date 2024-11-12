@@ -5,27 +5,32 @@ import { cookies } from "next/headers";
 import { Account, Avatars, Client, Databases, Storage } from "node-appwrite";
 
 export const createSessionClient = async () => {
-  const client = new Client()
-    .setEndpoint(appwriteConfig.endpointurl)
-    .setProject(appwriteConfig.projectid);
+  try {
+    const client = new Client()
+      .setEndpoint(appwriteConfig.endpointurl)
+      .setProject(appwriteConfig.projectid);
 
-  const session = (await cookies()).get("appwrite-session");
+    const session = (await cookies()).get("appwrite-session");
 
-  if (!session || !session.value) {
-    // redirect("/signin");
-    throw new Error("No session");
+    if (!session || !session.value) {
+      // redirect("/signin");
+      throw new Error("No session");
+    }
+
+    client.setSession(session.value);
+
+    return {
+      get account() {
+        return new Account(client);
+      },
+      get databases() {
+        return new Databases(client);
+      },
+    };
+  } catch (error) {
+    // handleError(error, "Failed to create session client");
+    console.log(error);
   }
-
-  client.setSession(session.value);
-
-  return {
-    get account() {
-      return new Account(client);
-    },
-    get databases() {
-      return new Databases(client);
-    },
-  };
 };
 
 export const createAdminClient = async () => {

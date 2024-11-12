@@ -55,6 +55,9 @@ export const createAccount = async ({
   }
   return parseStringify({ accountId });
 };
+
+
+
 export const verifySecret = async ({
   accountId,
   password,
@@ -75,6 +78,7 @@ export const verifySecret = async ({
   } catch (error) {
     handleError(error, "Failed to verify OTP");
   }
+
 };
 
 export const getCurrentUser = async () => {
