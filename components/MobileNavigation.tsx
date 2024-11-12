@@ -64,7 +64,7 @@ const MobileNavigation = ({
                 />
                 <div className="sm:hidden lg:block">
                   <p className="subtitle-2 capitalize">{fullName ?? "User"}</p>
-                  <p className="caption">{"user@Gmail.com"}</p>
+                  <p className="caption">{email}</p>
                 </div>
               </div>{" "}
               <Separator className="mb-4 bg-light-200/20" />

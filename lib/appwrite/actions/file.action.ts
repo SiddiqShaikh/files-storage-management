@@ -200,7 +200,7 @@ export const getTotalUsedSpace = async () => {
         totalSpace[fileType].latestDate = file.$updatedAt;
       }
     });
-    console.log(totalSpace);
+
     return parseStringify(totalSpace);
   } catch (error) {
     handleError(error, "Failed to get total used space");
