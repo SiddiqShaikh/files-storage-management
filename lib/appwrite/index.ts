@@ -7,28 +7,28 @@ import { Account, Avatars, Client, Databases, Storage } from "node-appwrite";
 export const createSessionClient = async () => {
   try {
     const client = new Client()
-      .setEndpoint(appwriteConfig.endpointurl)
-      .setProject(appwriteConfig.projectid);
+    .setEndpoint(appwriteConfig.endpointurl)
+    .setProject(appwriteConfig.projectid);
 
-    const session = (await cookies()).get("appwrite-session");
+  const session = (await cookies()).get("appwrite-session");
 
-    if (!session || !session.value) {
-      throw new Error("No session");
-    }
+  if (!session || !session.value) {
+    return null; // Return null instead of throwing error
+  }
 
-    client.setSession(session.value);
+  client.setSession(session.value);
 
-    return {
-      get account() {
-        return new Account(client);
-      },
-      get databases() {
-        return new Databases(client);
-      },
-    };
+  return {
+    get account() {
+      return new Account(client);
+    },
+    get databases() {
+      return new Databases(client);
+    },
+  };
   } catch (error) {
     console.log(error);
-    throw error; // Re-throw the error instead of silently returning undefined
+
   }
 };
 
