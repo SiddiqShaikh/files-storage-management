@@ -13,7 +13,6 @@ export const createSessionClient = async () => {
     const session = (await cookies()).get("appwrite-session");
 
     if (!session || !session.value) {
-      // redirect("/signin");
       throw new Error("No session");
     }
 
@@ -28,8 +27,8 @@ export const createSessionClient = async () => {
       },
     };
   } catch (error) {
-    // handleError(error, "Failed to create session client");
     console.log(error);
+    throw error; // Re-throw the error instead of silently returning undefined
   }
 };
 
