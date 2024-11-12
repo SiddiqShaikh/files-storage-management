@@ -167,3 +167,42 @@ export const deleteFile = async ({
     handleError(error, "Failed to delete files");
   }
 };
+
+export const getTotalUsedSpace = async () => {
+  try {
+    const client = await createSessionClient();
+    if (!client) throw new Error("Failed to create session client");
+    const { databases } = client;
+    const currentUser = await getCurrentUser();
+    if (!currentUser) throw new Error("User not found!");
+    const files = await databases.listDocuments(
+      appwriteConfig.databaseid,
+      appwriteConfig.filescollectionid,
+      [Query.equal("owner", currentUser.$id)]
+    );
+    const totalSpace = {
+      image: { size: 0, latestDate: "" },
+      video: { size: 0, latestDate: "" },
+      audio: { size: 0, latestDate: "" },
+      document: { size: 0, latestDate: "" },
+      other: { size: 0, latestDate: "" },
+      all: 2 * 1024 * 1024 * 1024,
+      used: 0,
+    };
+    files.documents.forEach((file: Models.Document) => {
+      const fileType = file.type as FileType;
+      totalSpace[fileType].size += file.size;
+      totalSpace.used += file.size;
+      if (
+        !totalSpace[fileType].latestDate ||
+        new Date(totalSpace[fileType].latestDate) < new Date(file.$updatedAt)
+      ) {
+        totalSpace[fileType].latestDate = file.$updatedAt;
+      }
+    });
+    console.log(totalSpace);
+    return parseStringify(totalSpace);
+  } catch (error) {
+    handleError(error, "Failed to get total used space");
+  }
+};
